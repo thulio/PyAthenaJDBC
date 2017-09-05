@@ -132,7 +132,8 @@ class AthenaDialect(DefaultDialect):
                   ordinal_position,
                   comment
                 FROM information_schema.columns
-                """
+                WHERE table_schema = '{0}' AND table_name = '{1}'
+                """.format(schema, table_name)
         return [
             {
                 'name': row.column_name,
@@ -143,7 +144,6 @@ class AthenaDialect(DefaultDialect):
                 'ordinal_position': row.ordinal_position,
                 'comment': row.comment,
             } for row in connection.execute(query).fetchall()
-            if row.table_schema == schema and row.table_name == table_name
         ]
 
     def get_foreign_keys(self, connection, table_name, schema=None, **kw):
